@@ -25,14 +25,16 @@
         x: 50,
         y: 50,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 1's image URL
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 1's image URL
+        rotateRight: true // Set rotateRight property to true for player 1
       };
 
       const player2 = {
         x: 750,
         y: 350,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 2's image URL
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 2's image URL
+        rotateLeft: true // Set rotateLeft property to true for player 2
       };
 
       const keys = {};
@@ -48,7 +50,11 @@
           moveBackward(player1);
         }
         if (keys['a']) {
-          moveLeft(player1);
+          if (player1.rotateRight) { // Check if rotateRight property is true for player 1
+            rotateRight(player1);
+          } else {
+            moveLeft(player1);
+          }
         }
         if (keys['d']) {
           moveRight(player1);
@@ -60,7 +66,11 @@
           moveBackward(player2);
         }
         if (keys['ArrowLeft']) {
-          moveLeft(player2);
+          if (player2.rotateLeft) { // Check if rotateLeft property is true for player 2
+            rotateLeft(player2);
+          } else {
+            moveLeft(player2);
+          }
         }
         if (keys['ArrowRight']) {
           moveRight(player2);
@@ -87,7 +97,15 @@
       function drawPlayer(player) {
         const img = new Image();
         img.src = player.image;
-        context.drawImage(img, player.x, player.y, 80, 80);
+        context.save(); // Save the current canvas state
+        context.translate(player.x + 40, player.y + 40); // Translate to the center of the player's position
+        if (player.rotateLeft) {
+          context.rotate(-Math.PI / 2); // Rotate the image by 90 degrees to the left
+        } else if (player.rotateRight) {
+          context.rotate(Math.PI / 2); // Rotate the image by 90 degrees to the right
+        }
+        context.drawImage(img, -40, -40, 80, 80); // Draw the image with adjusted position
+        context.restore(); // Restore the canvas state to its previous state
       }
 
       function moveForward(player) {
@@ -104,6 +122,14 @@
 
       function moveRight(player) {
         player.x += player.speed;
+      }
+
+      function rotateLeft(player) {
+        player.rotateLeft = true; // Set rotateLeft property to true for player 2
+      }
+
+      function rotateRight(player) {
+        player.rotateRight = true; // Set rotateRight property to true for player 1
       }
 
       function handleKeyDown(event) {
