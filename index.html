@@ -25,7 +25,6 @@
         x: 50,
         y: 50,
         speed: 5,
-        rotation: 0,
         image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 1's image URL
       };
 
@@ -33,7 +32,6 @@
         x: 750,
         y: 350,
         speed: 5,
-        rotation: 0,
         image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 2's image URL
       };
 
@@ -50,10 +48,10 @@
           moveBackward(player1);
         }
         if (keys['a']) {
-          rotateLeft(player1);
+          moveLeft(player1);
         }
         if (keys['d']) {
-          rotateRight(player1);
+          moveRight(player1);
         }
         if (keys['ArrowUp']) {
           moveForward(player2);
@@ -62,10 +60,10 @@
           moveBackward(player2);
         }
         if (keys['ArrowLeft']) {
-          rotateLeft(player2);
+          moveLeft(player2);
         }
         if (keys['ArrowRight']) {
-          rotateRight(player2);
+          moveRight(player2);
         }
 
         // Draw background image
@@ -89,32 +87,23 @@
       function drawPlayer(player) {
         const img = new Image();
         img.src = player.image;
-
-        context.save();
-        context.translate(player.x, player.y);
-        context.rotate(player.rotation);
-        context.drawImage(img, -img.width / 2, -img.height / 2, 40, 40);
-        context.restore();
+        context.drawImage(img, player.x, player.y, 80, 80);
       }
 
       function moveForward(player) {
-        const angleInRadians = player.rotation;
-        player.x += Math.cos(angleInRadians) * player.speed;
-        player.y += Math.sin(angleInRadians) * player.speed;
+        player.y -= player.speed;
       }
 
       function moveBackward(player) {
-        const angleInRadians = player.rotation;
-        player.x -= Math.cos(angleInRadians) * player.speed;
-        player.y -= Math.sin(angleInRadians) * player.speed;
+        player.y += player.speed;
       }
 
-      function rotateLeft(player) {
-        player.rotation -= Math.PI / 180 * 5; // Rotate 5 degrees counterclockwise
+      function moveLeft(player) {
+        player.x -= player.speed;
       }
 
-      function rotateRight(player) {
-        player.rotation += Math.PI / 180 * 5; // Rotate 5 degrees clockwise
+      function moveRight(player) {
+        player.x += player.speed;
       }
 
       function handleKeyDown(event) {
