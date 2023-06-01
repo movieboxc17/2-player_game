@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      background-color: #000;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const canvas = document.getElementById('gameCanvas');
+      const context = canvas.getContext('2d');
+
+      const player1 = {
+        x: 50,
+        y: 50,
+        speed: 5,
+        rotation: 0,
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 1's image URL
+      };
+
+      const player2 = {
+        x: 750,
+        y: 350,
+        speed: 5,
+        rotation: 0,
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 2's image URL
+      };
+
+      const keys = {};
+
+      const backgroundImage = 'https://i.ibb.co/FDvJt9h/AD2-D68-E8-B089-4-C7-C-AE55-2-D5-C95-F6-D90-F.jpg'; // Replace with the background image URL
+
+      function update() {
+        // Update player positions
+        if (keys['w']) {
+          moveForward(player1);
+        }
+        if (keys['s']) {
+          moveBackward(player1);
+        }
+        if (keys['a']) {
+          rotateLeft(player1);
+        }
+        if (keys['d']) {
+          rotateRight(player1);
+        }
+        if (keys['ArrowUp']) {
+          moveForward(player2);
+        }
+        if (keys['ArrowDown']) {
+          moveBackward(player2);
+        }
+        if (keys['ArrowLeft']) {
+          rotateLeft(player2);
+        }
+        if (keys['ArrowRight']) {
+          rotateRight(player2);
+        }
+
+        // Draw background image
+        if (backgroundImage) {
+          const img = new Image();
+          img.src = backgroundImage;
+          context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        } else {
+          // Clear canvas if no background image is set
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Draw players
+        drawPlayer(player1);
+        drawPlayer(player2);
+
+        // Update next frame
+        requestAnimationFrame(update);
+      }
+
+      function drawPlayer(player) {
+        const img = new Image();
+        img.src = player.image;
+
+        context.save();
+        context.translate(player.x, player.y);
+        context.rotate(player.rotation);
+        context.drawImage(img, -img.width / 2, -img.height / 2, 40, 40);
+        context.restore();
+      }
+
+      function moveForward(player) {
+        const angleInRadians = player.rotation;
+        player.x += Math.cos(angleInRadians) * player.speed;
+        player.y += Math.sin(angleInRadians) * player.speed;
+      }
+
+      function moveBackward(player) {
+        const angleInRadians = player.rotation;
+        player.x -= Math.cos(angleInRadians) * player.speed;
+        player.y -= Math.sin(angleInRadians) * player.speed;
+      }
+
+      function rotateLeft(player) {
+        player.rotation -= Math.PI / 180 * 5; // Rotate 5 degrees counterclockwise
+      }
+
+      function rotateRight(player) {
+        player.rotation += Math.PI / 180 * 5; // Rotate 5 degrees clockwise
+      }
+
+      function handleKeyDown(event) {
+        keys[event.key] = true;
+      }
+
+      function handleKeyUp(event) {
+        keys[event.key] = false;
+      }
+
+      // Listen for keydown and keyup events
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+
+      // Start the game
+      update();
+    });
+  </script>
+</body>
+</html>
