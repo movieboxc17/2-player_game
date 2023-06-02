@@ -27,7 +27,8 @@
         speed: 5,
         image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 1's image URL
         rotateLeft: false,
-        rotateRight: false
+        rotateRight: false,
+        lastShotTime: 0
       };
 
       const player2 = {
@@ -36,12 +37,17 @@
         speed: 5,
         image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 2's image URL
         rotateLeft: false,
-        rotateRight: false
+        rotateRight: false,
+        lastShotTime: 0
       };
 
       const keys = {};
 
       const backgroundImage = 'https://i.ibb.co/FDvJt9h/AD2-D68-E8-B089-4-C7-C-AE55-2-D5-C95-F6-D90-F.jpg'; // Replace with the background image URL
+
+      const smallBlockImage = 'https://i.ibb.co/f9V8FcC/red-block.png'; // URL of the small block image
+
+      const shotInterval = 1000; // Interval between shots in milliseconds
 
       function update() {
         // Update player positions
@@ -83,6 +89,10 @@
         // Draw players
         drawPlayer(player1);
         drawPlayer(player2);
+
+        // Shoot small blocks
+        shootSmallBlock(player1);
+        shootSmallBlock(player2);
 
         // Update next frame
         requestAnimationFrame(update);
@@ -132,6 +142,30 @@
         }
         player.rotateLeft = false;
         player.rotateRight = true;
+      }
+
+      function shootSmallBlock(player) {
+        const currentTime = new Date().getTime();
+        if (currentTime - player.lastShotTime > shotInterval) {
+          player.lastShotTime = currentTime;
+
+          const smallBlock = {
+            x: player.x + 40,
+            y: player.y + 40,
+            speed: 10,
+            image: smallBlockImage
+          };
+
+          const angle = player.rotateLeft ? -Math.PI / 2 : player.rotateRight ? Math.PI / 2 : 0;
+
+          smallBlock.x += Math.cos(angle) * 40;
+          smallBlock.y += Math.sin(angle) * 40;
+
+          // Draw the small block
+          const img = new Image();
+          img.src = smallBlock.image;
+          context.drawImage(img, smallBlock.x - 10, smallBlock.y - 10, 20, 20);
+        }
       }
 
       function handleKeyDown(event) {
