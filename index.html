@@ -10,11 +10,13 @@
     canvas {
       background-color: #000;
       display: block;
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="1200" height="600"></canvas>
+  <canvas id="gameCanvas"></canvas>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -25,49 +27,45 @@
         x: 50,
         y: 50,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 1's image URL
-        rotateLeft: false,
-        rotateRight: false
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 1's image URL
       };
 
       const player2 = {
         x: 750,
         y: 350,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 2's image URL
-        rotateLeft: false,
-        rotateRight: false
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 2's image URL
       };
 
       const keys = {};
 
-      const backgroundImage = 'https://i.ibb.co/DC4c0bz/IMG-2795.jpg'; // Replace with the background image URL
+      const backgroundImage = 'https://i.ibb.co/FDvJt9h/AD2-D68-E8-B089-4-C7-C-AE55-2-D5-C95-F6-D90-F.jpg'; // Replace with the background image URL
 
       function update() {
         // Update player positions
         if (keys['w']) {
-          moveForward(player1);
+          player1.y -= player1.speed;
         }
         if (keys['s']) {
-          moveBackward(player1);
+          player1.y += player1.speed;
         }
         if (keys['a']) {
-          moveLeft(player1);
+          player1.x -= player1.speed;
         }
         if (keys['d']) {
-          moveRight(player1);
+          player1.x += player1.speed;
         }
         if (keys['ArrowUp']) {
-          moveForward(player2);
+          player2.y -= player2.speed;
         }
         if (keys['ArrowDown']) {
-          moveBackward(player2);
+          player2.y += player2.speed;
         }
         if (keys['ArrowLeft']) {
-          moveLeft(player2);
+          player2.x -= player2.speed;
         }
         if (keys['ArrowRight']) {
-          moveRight(player2);
+          player2.x += player2.speed;
         }
 
         // Draw background image
@@ -91,39 +89,7 @@
       function drawPlayer(player) {
         const img = new Image();
         img.src = player.image;
-        context.save(); // Save the current canvas state
-        context.translate(player.x + 40, player.y + 40); // Translate to the center of the player's position
-        if (player.rotateLeft) {
-          context.rotate(-Math.PI / 2); // Rotate the image by 90 degrees to the left
-        } else if (player.rotateRight) {
-          context.rotate(Math.PI / 2); // Rotate the image by 90 degrees to the right
-        }
-        context.drawImage(img, -40, -40, 80, 80); // Draw the image with the correct rotation
-        context.restore(); // Restore the previous canvas state
-      }
-
-      function moveForward(player) {
-        player.y -= player.speed;
-        player.rotateLeft = false;
-        player.rotateRight = false;
-      }
-
-      function moveBackward(player) {
-        player.y += player.speed;
-        player.rotateLeft = false;
-        player.rotateRight = false;
-      }
-
-      function moveLeft(player) {
-        player.x -= player.speed;
-        player.rotateLeft = true;
-        player.rotateRight = false;
-      }
-
-      function moveRight(player) {
-        player.x += player.speed;
-        player.rotateLeft = false;
-        player.rotateRight = true;
+        context.drawImage(img, player.x, player.y, 80, 80);
       }
 
       function handleKeyDown(event) {
