@@ -25,14 +25,18 @@
         x: 50,
         y: 50,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 1's image URL
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 1's image URL
+        rotateLeft: false,
+        rotateRight: false
       };
 
       const player2 = {
         x: 750,
         y: 350,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 2's image URL
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 2's image URL
+        rotateLeft: false,
+        rotateRight: false
       };
 
       const keys = {};
@@ -89,24 +93,37 @@
         img.src = player.image;
         context.save(); // Save the current canvas state
         context.translate(player.x + 40, player.y + 40); // Translate to the center of the player's position
-        context.drawImage(img, -40, -40, 80, 80); // Draw the image with adjusted position
-        context.restore(); // Restore the canvas state to its previous state
+        if (player.rotateLeft) {
+          context.rotate(-Math.PI / 2); // Rotate the image by 90 degrees to the left
+        } else if (player.rotateRight) {
+          context.rotate(Math.PI / 2); // Rotate the image by 90 degrees to the right
+        }
+        context.drawImage(img, -40, -40, 80, 80); // Draw the image with the correct rotation
+        context.restore(); // Restore the previous canvas state
       }
 
       function moveForward(player) {
         player.y -= player.speed;
+        player.rotateLeft = false;
+        player.rotateRight = false;
       }
 
       function moveBackward(player) {
         player.y += player.speed;
+        player.rotateLeft = false;
+        player.rotateRight = false;
       }
 
       function moveLeft(player) {
         player.x -= player.speed;
+        player.rotateLeft = true;
+        player.rotateRight = false;
       }
 
       function moveRight(player) {
         player.x += player.speed;
+        player.rotateLeft = false;
+        player.rotateRight = true;
       }
 
       function handleKeyDown(event) {
