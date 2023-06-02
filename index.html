@@ -103,25 +103,33 @@
       }
 
       function moveForward(player) {
-        player.y -= player.speed;
+        if (player.y - player.speed >= 0) {
+          player.y -= player.speed;
+        }
         player.rotateLeft = false;
         player.rotateRight = false;
       }
 
       function moveBackward(player) {
-        player.y += player.speed;
+        if (player.y + player.speed <= canvas.height - 80) {
+          player.y += player.speed;
+        }
         player.rotateLeft = false;
         player.rotateRight = false;
       }
 
       function moveLeft(player) {
-        player.x -= player.speed;
+        if (player.x - player.speed >= 0) {
+          player.x -= player.speed;
+        }
         player.rotateLeft = true;
         player.rotateRight = false;
       }
 
       function moveRight(player) {
-        player.x += player.speed;
+        if (player.x + player.speed <= canvas.width - 80) {
+          player.x += player.speed;
+        }
         player.rotateLeft = false;
         player.rotateRight = true;
       }
