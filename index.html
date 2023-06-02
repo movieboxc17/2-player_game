@@ -10,13 +10,11 @@
     canvas {
       background-color: #000;
       display: block;
-      width: 100%;
-      height: 100%;
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
+  <canvas id="gameCanvas" width="1200" height="600"></canvas>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -27,14 +25,18 @@
         x: 50,
         y: 50,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 1's image URL
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 1's image URL
+        rotateLeft: false,
+        rotateRight: false
       };
 
       const player2 = {
         x: 750,
         y: 350,
         speed: 5,
-        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png' // Replace with Player 2's image URL
+        image: 'https://i.ibb.co/71k58YR/CB3-FCEB3-26-F9-45-B5-A68-C-3-F05-BEADEAE5-removebg-preview.png', // Replace with Player 2's image URL
+        rotateLeft: false,
+        rotateRight: false
       };
 
       const keys = {};
@@ -44,28 +46,28 @@
       function update() {
         // Update player positions
         if (keys['w']) {
-          player1.y -= player1.speed;
+          moveForward(player1);
         }
         if (keys['s']) {
-          player1.y += player1.speed;
+          moveBackward(player1);
         }
         if (keys['a']) {
-          player1.x -= player1.speed;
+          moveLeft(player1);
         }
         if (keys['d']) {
-          player1.x += player1.speed;
+          moveRight(player1);
         }
         if (keys['ArrowUp']) {
-          player2.y -= player2.speed;
+          moveForward(player2);
         }
         if (keys['ArrowDown']) {
-          player2.y += player2.speed;
+          moveBackward(player2);
         }
         if (keys['ArrowLeft']) {
-          player2.x -= player2.speed;
+          moveLeft(player2);
         }
         if (keys['ArrowRight']) {
-          player2.x += player2.speed;
+          moveRight(player2);
         }
 
         // Draw background image
@@ -89,7 +91,39 @@
       function drawPlayer(player) {
         const img = new Image();
         img.src = player.image;
-        context.drawImage(img, player.x, player.y, 80, 80);
+        context.save(); // Save the current canvas state
+        context.translate(player.x + 40, player.y + 40); // Translate to the center of the player's position
+        if (player.rotateLeft) {
+          context.rotate(-Math.PI / 2); // Rotate the image by 90 degrees to the left
+        } else if (player.rotateRight) {
+          context.rotate(Math.PI / 2); // Rotate the image by 90 degrees to the right
+        }
+        context.drawImage(img, -40, -40, 80, 80); // Draw the image with the correct rotation
+        context.restore(); // Restore the previous canvas state
+      }
+
+      function moveForward(player) {
+        player.y -= player.speed;
+        player.rotateLeft = false;
+        player.rotateRight = false;
+      }
+
+      function moveBackward(player) {
+        player.y += player.speed;
+        player.rotateLeft = false;
+        player.rotateRight = false;
+      }
+
+      function moveLeft(player) {
+        player.x -= player.speed;
+        player.rotateLeft = true;
+        player.rotateRight = false;
+      }
+
+      function moveRight(player) {
+        player.x += player.speed;
+        player.rotateLeft = false;
+        player.rotateRight = true;
       }
 
       function handleKeyDown(event) {
