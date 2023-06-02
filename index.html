@@ -49,6 +49,8 @@
 
       const shotInterval = 1000; // Interval between shots in milliseconds
 
+      const smallBlocks = []; // Array to store the small blocks
+
       function update() {
         // Update player positions
         if (keys['w']) {
@@ -93,6 +95,9 @@
         // Shoot small blocks
         shootSmallBlock(player1);
         shootSmallBlock(player2);
+
+        // Update small blocks
+        updateSmallBlocks();
 
         // Update next frame
         requestAnimationFrame(update);
@@ -153,19 +158,28 @@
             x: player.x + 40,
             y: player.y + 40,
             speed: 10,
-            image: smallBlockImage
+            image: smallBlockImage,
+            angle: player.rotateLeft ? -Math.PI / 2 : player.rotateRight ? Math.PI / 2 : 0
           };
 
-          const angle = player.rotateLeft ? -Math.PI / 2 : player.rotateRight ? Math.PI / 2 : 0;
-
-          smallBlock.x += Math.cos(angle) * 40;
-          smallBlock.y += Math.sin(angle) * 40;
-
-          // Draw the small block
-          const img = new Image();
-          img.src = smallBlock.image;
-          context.drawImage(img, smallBlock.x - 10, smallBlock.y - 10, 20, 20);
+          smallBlocks.push(smallBlock);
         }
+      }
+
+      function updateSmallBlocks() {
+        const updatedSmallBlocks = [];
+        for (const smallBlock of smallBlocks) {
+          smallBlock.x += Math.cos(smallBlock.angle) * smallBlock.speed;
+          smallBlock.y += Math.sin(smallBlock.angle) * smallBlock.speed;
+          if (smallBlock.x >= 0 && smallBlock.x <= canvas.width && smallBlock.y >= 0 && smallBlock.y <= canvas.height) {
+            updatedSmallBlocks.push(smallBlock);
+            const img = new Image();
+            img.src = smallBlock.image;
+            context.drawImage(img, smallBlock.x - 10, smallBlock.y - 10, 20, 20);
+          }
+        }
+        smallBlocks.length = 0;
+        Array.prototype.push.apply(smallBlocks, updatedSmallBlocks);
       }
 
       function handleKeyDown(event) {
